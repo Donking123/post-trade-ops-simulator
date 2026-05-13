@@ -1,10 +1,10 @@
-"""M10: Plotly dashboard — exception management view.
+"""M6: Plotly dashboard — exception management view.
 
-Three panels surface the operational outputs of M2, M5, and M8 for human
+Three panels surface the operational outputs of M2, M4, and M5 for human
 review by an MO analyst:
 
-1. **Breaks queue** — merged view of MatchBreak (M2) + SettlementBreak (M5)
-   + ReconBreak (M8). Sortable by urgency. First screen analyst looks at.
+1. **Breaks queue** — merged view of MatchBreak (M2) + SettlementBreak (M4)
+   + ReconBreak (M5). Sortable by urgency. First screen analyst looks at.
 
 2. **Settlement calendar** — net cash flow per date for the next N days,
    per currency. Hover detail shows trade count behind each bar.
@@ -77,13 +77,13 @@ BREAK_DESCRIPTIONS: dict[str, str] = {
     "no_match": "No matching counterparty reply<br>(may be timing)",
     "qty_mismatch": "Quantity disagrees on Layer-1 match<br>(fat-finger or amendment)",
     "price_mismatch": "Price/rate disagrees beyond tolerance<br>(Layer-1 match)",
-    # M5 settlement
+    # M4 settlement
     "missing_their_side": "Counterparty hasn't sent matching<br>instruction yet",
     "missing_our_side": "Counterparty expects settlement we<br>don't acknowledge — CRITICAL",
     "amount_mismatch": "Settlement amount disagrees beyond<br>max(1bp, $1) tolerance",
     "currency_mismatch": "Settlement currency code disagrees",
     "date_mismatch": "Settlement date disagrees<br>(often holiday-calendar diff)",
-    # M8 reconciliation
+    # M5 reconciliation
     "position_qty_mismatch": "Share count differs<br>between our books and PB",
     "cash_balance_mismatch": "Cash balance differs<br>between our books and PB",
     "missing_position": "Equity position recorded<br>on only one side",
@@ -123,7 +123,7 @@ def build_breaks_queue(
     settlement_breaks: Iterable[SettlementBreak] = (),
     recon_breaks: Iterable[ReconBreak] = (),
 ) -> go.Figure:
-    """Merged breaks-queue table from M2 + M5 + M8, sorted by urgency desc."""
+    """Merged breaks-queue table from M2 + M4 + M5, sorted by urgency desc."""
     rows: list[dict] = []
 
     for b in match_breaks:
@@ -142,7 +142,7 @@ def build_breaks_queue(
     for b in settlement_breaks:
         rows.append({
             "urgency_label": _urgency_label(b.break_type),
-            "source": "M5 Settlement",
+            "source": "M4 Settlement",
             "break_type": b.break_type,
             "description": _break_description(b.break_type),
             "trade_id": b.trade_id,
@@ -155,7 +155,7 @@ def build_breaks_queue(
     for b in recon_breaks:
         rows.append({
             "urgency_label": _urgency_label(b.break_type),
-            "source": "M8 Reconciliation",
+            "source": "M5 Reconciliation",
             "break_type": b.break_type,
             "description": _break_description(b.break_type),
             "trade_id": "-",
@@ -225,7 +225,7 @@ def _short_str(v) -> str:
 def _settlement_source_label(s: Settlement) -> str:
     """Categorize a Settlement by source type for bar labels.
 
-    Reads from the description and event_id fields produced by M5.
+    Reads from the description and event_id fields produced by M4.
     """
     desc = s.description.lower()
     if s.event_id and "reset" in desc:

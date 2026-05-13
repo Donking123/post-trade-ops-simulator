@@ -1,4 +1,4 @@
-"""M8: Reconciliation engine.
+"""M5: Reconciliation engine.
 
 After all trades + lifecycle events + settlements have processed, MO
 reconciles the firm's internal position view against the prime broker's
@@ -17,7 +17,7 @@ Break types:
 - `missing_position` — equity position on one side only
 - `missing_cash` — cash balance on one side only
 
-Cash balance tolerance: max(1bp of amount, $1 floor) — same as M5 break detection.
+Cash balance tolerance: max(1bp of amount, $1 floor) — same as M4 break detection.
 
 Future enhancements parked:
 - IRS notional reconciliation with accrued interest
@@ -39,7 +39,7 @@ from post_trade.trade import Trade
 from post_trade.settlement import Settlement
 
 
-# Cash balance comparison tolerance (mirrors M5 amount tolerance)
+# Cash balance comparison tolerance (mirrors M4 amount tolerance)
 CASH_TOLERANCE_BPS = 1.0
 CASH_ABSOLUTE_FLOOR = 1.0
 

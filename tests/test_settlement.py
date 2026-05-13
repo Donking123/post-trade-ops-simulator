@@ -1,4 +1,4 @@
-"""Tests for M5: Settlement projection + breaks.
+"""Tests for M4: Settlement projection + breaks.
 
 Invariants verified:
 - FX buy generates 2 settlements with correct sign (+ base / - quote)

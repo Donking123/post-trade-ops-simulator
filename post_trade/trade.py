@@ -60,8 +60,8 @@ class Trade:
     The MO desk owns this object's lifecycle:
     - Affirm + confirm with the counterparty (M2 updates confirmation_status)
     - Track lifecycle events that hang off this trade (M3)
-    - Project settlement and flag breaks (M5)
-    - Reconcile against the prime broker view (M8)
+    - Project settlement and flag breaks (M4)
+    - Reconcile against the prime broker view (M5)
     """
 
     trade_id: str

@@ -1,7 +1,7 @@
 """Post-Trade Operations Simulator — end-to-end pipeline.
 
 Runs M1 (booking) -> M2 (confirmation) -> M3 (lifecycle) ->
-M5 (settlement + breaks) -> M8 (reconciliation) -> M10 (dashboard)
+M4 (settlement + breaks) -> M5 (reconciliation) -> M6 (dashboard)
 on synthetic data.
 
 Usage:
@@ -114,7 +114,7 @@ def main() -> None:
     events = generate_lifecycle_events(irs, sofr_fixings=sofr_fixings)
 
     # ---------------------------------------------------------------------
-    # M5 — Settlement projection + breaks (phantom instruction injected)
+    # M4 — Settlement projection + breaks (phantom instruction injected)
     # ---------------------------------------------------------------------
     settlements = project_settlements(trades, events)
     their_instructions = [{
@@ -125,7 +125,7 @@ def main() -> None:
     settlement_breaks = check_breaks(settlements, their_instructions)
 
     # ---------------------------------------------------------------------
-    # M8 — Reconciliation (PB shows 999 DBS instead of our 1000)
+    # M5 — Reconciliation (PB shows 999 DBS instead of our 1000)
     # ---------------------------------------------------------------------
     our_positions = compute_equity_positions(trades)
     our_cash = compute_cash_balances(settlements)
@@ -156,12 +156,12 @@ def main() -> None:
     print(f"Cash balances:         {len(our_cash)}")
     print("-" * 60)
     print(f"M2 confirmation breaks:    {len(match_breaks)}")
-    print(f"M5 settlement breaks:      {len(settlement_breaks)}")
-    print(f"M8 reconciliation breaks:  {len(recon_breaks)}")
+    print(f"M4 settlement breaks:      {len(settlement_breaks)}")
+    print(f"M5 reconciliation breaks:  {len(recon_breaks)}")
     print("=" * 60)
 
     # ---------------------------------------------------------------------
-    # M10 — Dashboard export
+    # M6 — Dashboard export
     # ---------------------------------------------------------------------
     os.makedirs("docs/screenshots", exist_ok=True)
     export_to_html(

@@ -6,7 +6,7 @@ Built as an MVP demonstration of post-trade operations — designed for clarity 
 
 After `python main.py` runs the end-to-end pipeline, three interactive Plotly dashboards land in [`docs/screenshots/`](docs/screenshots/) as standalone HTML files:
 
-- `breaks_queue.html` — MO exception queue (M2 + M5 + M8 breaks, urgency-coded)
+- `breaks_queue.html` — MO exception queue (M2 + M4 + M5 breaks, urgency-coded)
 - `settlement_calendar.html` — net cash flow by date and currency, source-annotated
 - `recon_variance.html` — position and cash recon: our view vs PB vs signed variance
 
@@ -18,9 +18,9 @@ Open any in a browser to hover, zoom, and filter.
 - `trade.py` (M1) — Trade booking via synthetic FIX-style parser
 - `confirmation.py` (M2) — CTM-style matching + Markitwire-style ISDA confirm generation
 - `lifecycle.py` (M3) — IR resets, equity dividends
-- `settlement.py` (M5) — T+0/T+1/T+2 projection by product + breaks generator
-- `reconciliation.py` (M8) — Prime-broker vs internal books
-- `dashboard.py` (M10) — Plotly exception management view
+- `settlement.py` (M4) — T+0/T+1/T+2 projection by product + breaks generator
+- `reconciliation.py` (M5) — Prime-broker vs internal books
+- `dashboard.py` (M6) — Plotly exception management view
 
 **5 products** (data model is extensible via `product_type` handler dispatch):
 - FX spot / forward — T+2 settlement, two-leg cash flow
@@ -50,11 +50,11 @@ Each operational requirement of a typical Middle Office / Trade Support role map
 | Knowledge of full product lifecycle (IR derivatives, FX, equities) | `post_trade/lifecycle.py` (M3) — IR resets with ACT/360 day-count, equity dividends |
 | Established procedures and methods for accurate trade capture | `docs/PROCEDURES.md` — break-resolution playbook per break type |
 | Accurate and timely trade affirmation across multiple asset classes on trade date | `post_trade/confirmation.py` (M2) — CTM-style two-layer matching + Markitwire-style ISDA confirms |
-| Timely resolution of breaks | `post_trade/settlement.py` (M5) + `post_trade/reconciliation.py` (M8) — 9 break types across confirmation, settlement, and recon |
-| Central point of contact for portfolio managers and trading on position, pricing, technology, risk, and security related issues | `post_trade/dashboard.py` (M10) — three Plotly panels surface every break + settlement + recon variance |
+| Timely resolution of breaks | `post_trade/settlement.py` (M4) + `post_trade/reconciliation.py` (M5) — 9 break types across confirmation, settlement, and recon |
+| Central point of contact for portfolio managers and trading on position, pricing, technology, risk, and security related issues | `post_trade/dashboard.py` (M6) — three Plotly panels surface every break + settlement + recon variance |
 | Multi-module pipeline modelling cross-functional interaction (Technology, Risk, Operations, Trading) | Pipeline architecture: modules consume each other's typed outputs (Trade → Settlement → Position → Break) |
 | Process discipline and control mindset | 73 pytest invariant tests act as code-level controls; each test names the real-world failure mode it prevents |
-| Prime broker reconciliation and vendor system workflows | `compute_cash_balances` + `reconcile_*_positions` in M8 model PB recon flow |
+| Prime broker reconciliation and vendor system workflows | `compute_cash_balances` + `reconcile_*_positions` in M5 model PB recon flow |
 | Familiarity with vendor confirmation systems (CTM, Markitwire) | CTM-style matching + Markitwire-style ISDA confirms modelled in M2 |
 | Two-tier tolerance for break detection | `max(1bp, $1 floor)` — prevents false positives without missing real errors |
 
@@ -64,7 +64,7 @@ Three Plotly panels surface the operational outputs of the simulator for human r
 
 ### Breaks Queue (`docs/screenshots/breaks_queue.html`)
 
-Merged view of M2 confirmation breaks, M5 settlement breaks, and M8 reconciliation breaks. 8-column table — `Urgency` (CRITICAL/HIGH/MEDIUM/LOW), `Source`, `Break Type`, `What it means` (plain-English description), `Trade ID`, `Position / Cash`, `Our value`, `Their value`. Rows colour-coded by urgency, sorted critical → low.
+Merged view of M2 confirmation breaks, M4 settlement breaks, and M5 reconciliation breaks. 8-column table — `Urgency` (CRITICAL/HIGH/MEDIUM/LOW), `Source`, `Break Type`, `What it means` (plain-English description), `Trade ID`, `Position / Cash`, `Our value`, `Their value`. Rows colour-coded by urgency, sorted critical → low.
 
 ### Settlement Calendar (`docs/screenshots/settlement_calendar.html`)
 
@@ -77,13 +77,13 @@ Three bars per break: our view (blue), PB view (orange), and the signed variance
 ## Project structure
 
 ```
-post_trade/                       # core modules (M1, M2, M3, M5, M8, M10)
+post_trade/                       # core modules (M1, M2, M3, M4, M5, M6)
 ├── trade.py                      # M1: Trade booking
 ├── confirmation.py               # M2: CTM-style matching + ISDA confirms
 ├── lifecycle.py                  # M3: IR resets + equity dividends
-├── settlement.py                 # M5: Cash settlement + breaks
-├── reconciliation.py             # M8: Position + cash recon vs PB
-└── dashboard.py                  # M10: Plotly dashboard
+├── settlement.py                 # M4: Cash settlement + breaks
+├── reconciliation.py             # M5: Position + cash recon vs PB
+└── dashboard.py                  # M6: Plotly dashboard
 tests/                            # 73 pytest invariant tests
 docs/
 ├── PROCEDURES.md                 # break-resolution playbook
@@ -103,7 +103,7 @@ pyproject.toml                    # editable package install config
 
 - Allocations & novations module (block trade → sub-accounts)
 - Margin/collateral mechanics (real ISDA SIMM, VM/IM)
-- Standalone intra-day NAV module (currently subsumed into M8 reconciliation)
+- Standalone intra-day NAV module (currently subsumed into M5 reconciliation)
 - Reporting module (P&L attribution by Greek)
 - Real FIX 4.4 parser (replace dict-based)
 - Additional products: FX exotics, futures, bonds, OTC exotics, equity swaps

@@ -19,7 +19,7 @@ events. M3 models two event types:
 
    The shares stay in the position; only cash changes.
 
-FX spot has no lifecycle events — it just settles T+2 (handled in M5).
+FX spot has no lifecycle events — it just settles T+2 (handled in M4).
 
 External market data needed (synthetic for MVP):
 - `SOFRFixings` — a date → rate table

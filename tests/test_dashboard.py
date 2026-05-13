@@ -1,4 +1,4 @@
-"""Tests for M10: Plotly dashboard.
+"""Tests for M6: Plotly dashboard.
 
 Smoke tests verifying:
 - Each panel function returns a Plotly Figure

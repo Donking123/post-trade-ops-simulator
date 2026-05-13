@@ -69,7 +69,7 @@ Each procedure follows the same structure: **what the break means**, **likely ro
 
 ---
 
-## 2. M5 — Settlement breaks
+## 2. M4 — Settlement breaks
 
 ### 2.1 `missing_their_side`
 
@@ -167,7 +167,7 @@ Each procedure follows the same structure: **what the break means**, **likely ro
 
 ---
 
-## 3. M8 — Reconciliation breaks
+## 3. M5 — Reconciliation breaks
 
 ### 3.1 `position_qty_mismatch`
 

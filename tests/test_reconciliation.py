@@ -1,4 +1,4 @@
-"""Tests for M8: Reconciliation.
+"""Tests for M5: Reconciliation.
 
 Invariants verified:
 - Equity positions sum buys minus sells per (portfolio, ticker)

@@ -1,4 +1,4 @@
-"""M5: Settlement projection + breaks.
+"""M4: Settlement projection + breaks.
 
 For each trade and lifecycle event, project the expected cash settlement(s),
 then check against counterparty settlement instructions and flag any
